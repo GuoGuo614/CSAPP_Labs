@@ -1,2 +1,2 @@
 # CSAPP
-The labs of Computer System: A programmer's perspective
+The labs of Computer System: A Programmer's Perspective
