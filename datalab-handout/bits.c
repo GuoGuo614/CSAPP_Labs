@@ -1,4 +1,3 @@
-#include <stdio.h>
 /* 
  * CS:APP Data Lab 
  * 
@@ -351,11 +350,4 @@ int floatFloat2Int(unsigned uf) {
  */
 unsigned floatPower2(int x) {
     return 2;
-}
-
-int main(void) {
-  float x = -1.6;
-  unsigned uf = *(unsigned*)&x;
-  printf("%d\n", floatFloat2Int(uf));
-  return 0;
 }
