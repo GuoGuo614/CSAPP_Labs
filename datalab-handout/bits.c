@@ -1,3 +1,4 @@
+#include <stdio.h>
 /* 
  * CS:APP Data Lab 
  * 
@@ -181,7 +182,9 @@ int isTmax(int x) {
  *   Rating: 2
  */
 int allOddBits(int x) {
-  return 2;
+  int mask = 0x55555555;
+  x = x & mask;
+  return !(x);
 }
 /* 
  * negate - return -x 
@@ -204,7 +207,17 @@ int negate(int x) {
  *   Rating: 3
  */
 int isAsciiDigit(int x) {
-  
+  // It's OK to do isLessOrEqual twice, but I don't do that.
+  int d1, d2, d3, other;
+  x = x >> 1;
+  d1 = x & 0x1;
+  x = x >> 1;
+  d2 = x & 0x1;
+  x = x >> 1;
+  d3 = x & 0x1;
+  x = x >> 1;
+  other = !(x ^ 0x3);
+  return (!(d3 & (d2 | d1))) & other;
 }
 /* 
  * conditional - same as x ? y : z 
@@ -214,7 +227,9 @@ int isAsciiDigit(int x) {
  *   Rating: 3
  */
 int conditional(int x, int y, int z) {
-  return 2;
+  x = !!(x);
+  x = ~x + 1;
+  return (x & y) + (~x & z);
 }
 /* 
  * isLessOrEqual - if x <= y  then return 1, else return 0 
@@ -224,7 +239,10 @@ int conditional(int x, int y, int z) {
  *   Rating: 3
  */
 int isLessOrEqual(int x, int y) {
-  return 2;
+  int nagetiveX = ~x + 1;
+  int diff = y + nagetiveX;
+  int result = diff >> 31;
+  return !(result);
 }
 //4
 /* 
@@ -236,7 +254,11 @@ int isLessOrEqual(int x, int y) {
  *   Rating: 4 
  */
 int logicalNeg(int x) {
-  return 2;
+  unsigned int unsignedX = (unsigned int) x;
+  int first_1 = unsignedX >> 31;
+  unsigned int nagetiveX = ~unsignedX + 1;
+  int first_2 = nagetiveX >> 31;
+  return first_1 | first_2;
 }
 /* howManyBits - return the minimum number of bits required to represent x in
  *             two's complement
@@ -266,7 +288,18 @@ int howManyBits(int x) {
  *   Rating: 4
  */
 unsigned floatScale2(unsigned uf) {
-  return 2;
+  unsigned sign = uf & 0x80000000;
+  unsigned exp  = uf & 0x7F800000;
+  unsigned frac = uf & 0x007FFFFF;
+  if (exp == 0) {
+    frac = frac << 1;
+    return sign | exp | frac;
+  } else if (exp == 0x7F800000) {
+    return uf;
+  } else {
+    exp += 0x800000;
+    return sign | exp | frac;
+  }
 }
 /* 
  * floatFloat2Int - Return bit-level equivalent of expression (int) f
@@ -281,7 +314,30 @@ unsigned floatScale2(unsigned uf) {
  *   Rating: 4
  */
 int floatFloat2Int(unsigned uf) {
-  return 2;
+  unsigned sign = uf & 0x80000000;
+  unsigned exp  = uf & 0x7F800000;
+  unsigned frac = uf & 0x007FFFFF;
+  int exp_int = (exp >> 23) - 127;
+  // printf("%d\n", exp >> 23);
+  // printf("%d\n", exp_int);
+  if (exp == 0x7F800000 || exp_int >= 31) {
+    return 0x80000000u;
+  }
+  unsigned sign_int = sign >> 31;
+  if (exp == 0 || exp_int < 0) {
+    return 0;
+  }
+  frac = (1 << 23) | frac;
+  int result;
+  if (exp_int <= 23) {
+    result = frac >> (23 - exp_int);
+  } else {
+    result = frac << (exp_int - 23);
+  }
+  if (sign_int == 1) {
+    result = -result;
+  }
+  return result;
 }
 /* 
  * floatPower2 - Return bit-level equivalent of the expression 2.0^x
@@ -298,4 +354,11 @@ int floatFloat2Int(unsigned uf) {
  */
 unsigned floatPower2(int x) {
     return 2;
+}
+
+int main(void) {
+  float x = -1.6;
+  unsigned uf = *(unsigned*)&x;
+  printf("%d\n", floatFloat2Int(uf));
+  return 0;
 }
