@@ -182,7 +182,8 @@ int isTmax(int x) {
  */
 int allOddBits(int x) {
   int mask = 0x55555555;
-  x = x & mask;
+  x = x | mask;
+  x = x + 1;
   return !(x);
 }
 /* 
