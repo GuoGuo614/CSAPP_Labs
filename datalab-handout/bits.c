@@ -254,11 +254,8 @@ int isLessOrEqual(int x, int y) {
  *   Rating: 4 
  */
 int logicalNeg(int x) {
-  unsigned int unsignedX = (unsigned int) x;
-  int first_1 = unsignedX >> 31;
-  unsigned int nagetiveX = ~unsignedX + 1;
-  int first_2 = nagetiveX >> 31;
-  return first_1 | first_2;
+  int result = ((x | (~x + 1)) >> 31) + 1;
+  return result;
 }
 /* howManyBits - return the minimum number of bits required to represent x in
  *             two's complement
