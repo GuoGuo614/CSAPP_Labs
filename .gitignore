@@ -1,3 +1,4 @@
-hello.c
-hello.s
-hello
+*.DS_Store
+/hello.c
+/hello.s
+/hello
